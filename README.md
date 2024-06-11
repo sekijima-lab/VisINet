@@ -30,8 +30,8 @@ The image files or tfrecord file may be huge (around 1GB for 50 compounds), so p
 
 # License
 
-This code refers open-source codes licensed under the Apache License 2.0.
+This code refers open-source codes licensed under the CC BY-NC-ND 4.0 License.
 
-resnet_utils.py and resnet_v2.py is licensed from https://github.com/tensorflow/models/
+resnet_utils.py and resnet_v2.py (original files, before applying patch) are licensed at https://github.com/tensorflow/models/ .
 
-PyMol is published under a BSD-like license.
+PyMol is published under a BSD-like license at https://github.com/schrodinger/pymol-open-source .
