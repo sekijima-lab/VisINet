@@ -45,9 +45,3 @@ def kif11():
     non_active = 6634
     all_ = 6750
     return non_active/active
-
-def sirt1():
-    active = 130
-    non_active = 6739
-    all_ = active + non_active
-    return non_active/active
