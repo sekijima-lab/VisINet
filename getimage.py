@@ -1,4 +1,4 @@
-#!Use pymol-bundle python!
+# Use pymol-bundle python!
 #-*- Coding: utf-8 -*-
 
 # get images from pymol, 14 pics for each ligand
