@@ -1,3 +1,6 @@
+"""Usage: python test4.py <protein_name> <file_path> <jobname> <inputfile>
+<protein_name> must match one of the functions defined in ratio.py.
+"""
 import socket
 import tensorflow as tf
 import numpy as np
@@ -20,8 +23,8 @@ NUM_CLASSES = 2
 IMAGE_MATRIX_SIZE = IMAGE_SIZE*IMAGE_SIZE*CHANNELS
 batch_size = 81
 num_epochs = 5
-pos_weight = eval("ratio." + "sirt1")()
-file_path = argvs[1]
+pos_weight = eval("ratio." + argvs[1])()
+file_path = argvs[2]
 os.makedirs(file_path, exist_ok=True)
 
 def enrichmentfactor(scores, label, ratio=0.01):
@@ -59,11 +62,11 @@ def main(_):
               'image': tf.FixedLenFeature([], tf.string),
               'label': tf.FixedLenFeature([], tf.int64)
               })
-        test_image = tf.decode_raw(test_exam['image'], tf.float32)
+        test_image = tf.image.decode_png(test_exam['image'], channels=3)
         test_label = test_exam['label']
         #test_label = tf.decode_raw(test_exam['label'], tf.int64)
-        test_image = tf.reshape(test_image, [150528])
         test_image = tf.cast(test_image, tf.float32) * (1. / 255)
+        test_image = tf.reshape(test_image, [150528])
         test_label = tf.one_hot(test_label, 2)
         test_label = tf.cast(test_label,tf.float64)
         test_label = tf.reshape(test_label,[2])
@@ -137,6 +140,6 @@ def main(_):
 if __name__ == "__main__":
     #cnt = len(list(tf.python_io.tf_record_iterator("/gs/hs0/tga-science/img_dock/tf/" + argvs[1] + "_224_test.tfrecord")))
     #print("データ件数：{}".format(cnt))
-    jobname = argvs[2]
-    inputfile = argvs[3]
+    jobname = argvs[3]
+    inputfile = argvs[4]
     tf.app.run()
