@@ -45,3 +45,25 @@ def kif11():
     non_active = 6634
     all_ = 6750
     return non_active/active
+
+
+# (active, all_) counts per protein, for computing EF's random hitrate against
+# the full nominal dataset composition (not the subset actually rendered/
+# tested, which can be smaller due to docking/conformer-generation attrition).
+# Kept separate from the functions above so pos_weight's eval("ratio."+name)()
+# contract is untouched.
+_COUNTS = {
+    "akt1": (269, 14550),
+    "ampc": (48, 2850),
+    "cp3a4": (165, 11850),
+    "cxcr4": (40, 3300),
+    "gcr": (176, 12000),
+    "hivpr": (529, 36000),
+    "hivrt": (307, 15300),
+    "kif11": (116, 6750),
+}
+
+
+def counts(name):
+    """Returns (active, all_) nominal dataset compound counts for `name`."""
+    return _COUNTS[name]
