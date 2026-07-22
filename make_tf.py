@@ -32,7 +32,10 @@ def main():
         image = cv2.imread(l[0])
         print(image.shape)
         image = cv2.resize(image, (IMAGE_SIZE, IMAGE_SIZE))
-        image = image.flatten().astype(np.float32)
+        # PNG (lossless) instead of raw float32 bytes: ~1/10 the size per
+        # image and decoded pixels are bit-identical, so this does not
+        # change what the model sees.
+        _, image = cv2.imencode(".png", image)
         label = np.array(int(l[1]))
         ex = make_example(image.tobytes(), label)
         writer.write(ex.SerializeToString())
