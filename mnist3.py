@@ -1,4 +1,8 @@
-"""Implementation reference: https://github.com/horovod/horovod/examples ."""
+"""Implementation reference: https://github.com/horovod/horovod/examples .
+
+Usage: mpirun ... python mnist3.py <protein_name> <model_dir> <tfrecord> [<tfrecord> ...]
+<protein_name> must match one of the functions defined in ratio.py.
+"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -17,7 +21,7 @@ import random
 slim = tf.contrib.slim
 learn = tf.contrib.learn
 argvs = sys.argv
-pos_weight = eval("ratio." + "sirt1")()
+pos_weight = eval("ratio." + argvs[1])()
 print(pos_weight)
 repeats = 30
 batch_size = 128
@@ -42,10 +46,9 @@ def parser(serialized_example):
           'image': tf.FixedLenFeature([], tf.string),
           'label': tf.FixedLenFeature([], tf.int64),
       })
-  image = tf.decode_raw(features['image'], tf.float32)
+  image = tf.image.decode_png(features['image'], channels=3)
   label = features['label']
   #train_label = tf.decode_raw(train_exam['label'], tf.int64)
-  image = tf.reshape(image,[150528])
   image = tf.cast(image, tf.float32) * (1. / 255)
   image = tf.reshape(image, [224, 224, 3])
   label = tf.one_hot(label, 2)
@@ -79,7 +82,7 @@ def train_input_fn():
   features, labels = iterator.get_next()
   '''
   #d = tf.data.Dataset.list_files("/gs/hs0/tga-science/img_dock/tf/" + argvs[2] + "_train_*.tfrecord")
-  d = tf.data.TFRecordDataset(argvs[2:])
+  d = tf.data.TFRecordDataset(argvs[3:])
   d = d.shard(hvd.size(), hvd.rank())
   #d = d.interleave(tf.data.TFRecordDataset, cycle_length = 4, block_length=2)
   d = d.repeat(repeats)
@@ -95,7 +98,7 @@ def train_input_fn():
 
 
 def eval_input_fn():
-  dataset = tf.data.TFRecordDataset(argvs[2:])
+  dataset = tf.data.TFRecordDataset(argvs[3:])
   dataset = dataset.map(parser)
         # eval_dataset = eval_dataset.repeat(FLAGS.num_epochs)
   dataset = dataset.batch(81)
@@ -161,7 +164,7 @@ def main(unused_argv):
     config.gpu_options.visible_device_list = str(hvd.local_rank())
     # Horovod: save checkpoints only on worker 0 to prevent other workers from
     # corrupting them.
-    model_dir = argvs[1] if hvd.rank() == 0 else None
+    model_dir = argvs[2] if hvd.rank() == 0 else None
 
     # Create the Estimator
     mnist_classifier = tf.estimator.Estimator(
