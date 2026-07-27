@@ -33,7 +33,7 @@ The image files or tfrecord file may be huge (around 1GB for 50 compounds), so p
 
 # License
 
-This code refers open-source codes licensed under the CC BY-NC-ND 4.0 License.
+This code **except below ** is published as MIT license.
 
 resnet_utils.py and resnet_v2.py (original files, before applying patch) are licensed at https://github.com/tensorflow/models/ .
 
